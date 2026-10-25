@@ -335,8 +335,13 @@ tasks.register('testMoonDamageMixin', JavaExec) {
     mainClass = 'cc.thonly.reverie_dreams.server.MoonDamageMixinTest'
     systemProperty 'moon.test.projectDir', projectDir.absolutePath
     systemProperty 'moon.test.buildDir', layout.buildDirectory.get().asFile.absolutePath
+    def classpathFile = layout.buildDirectory.file('moon-mixin-test/runtime-classpath.txt')
+    systemProperty 'moon.test.classpathFile', classpathFile.get().asFile.absolutePath
     workingDir = layout.buildDirectory.dir('moon-mixin-test').get().asFile
-    doFirst { workingDir.mkdirs() }
+    doFirst {
+        workingDir.mkdirs()
+        classpathFile.get().asFile.setText(sourceSets.test.runtimeClasspath.asPath, 'UTF-8')
+    }
 }
 
 tasks.named('check') { dependsOn tasks.named('testMoonDamageMixin') }

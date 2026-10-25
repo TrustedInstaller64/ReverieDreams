@@ -83,3 +83,9 @@ Gradle原配置最大堆3 GB；没有升级Gradle/Java版本。初次编译阶�
 - 允许多武器独立冷却，因此旧的每攻击者固定频率上限不适用；性能应按活跃武器和实际有效攻击输入评估。
 
 独立审查已修复末影龙部位遗漏、嵌套目标清理使在途计数失效、干净构建映射元数据依赖三项问题；修正后没有剩余已确认的阻断项。
+
+### Windows 长类路径验证任务修复（2026-10-25）
+
+Windows 构建报告 `testMoonDamageMixin` 无法定位 Minecraft。使用只在 Manifest `Class-Path` 中列出依赖的启动 JAR，在本地复现同一异常。Knot 扫描 `java.class.path`，无法从该启动 JAR 获取完整的游戏类路径。
+
+验证任务现将完整 runtimeClasspath 写入 UTF-8 文件，测试入口在初始化 Knot 前读取该文件并恢复扫描类路径。改动仅涉及测试启动。相同启动 JAR 复现用例修复后通过；未在真实 Windows 主机上运行，仍需 Windows 构建复核。

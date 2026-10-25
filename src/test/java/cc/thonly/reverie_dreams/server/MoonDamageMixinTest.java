@@ -112,6 +112,10 @@ public class MoonDamageMixinTest {
                 + build.resolve("resources/main"));
         System.setProperty("mixin.debug.export", "true");
         System.setProperty("mixin.debug.export.filter", ENTITY_PACKAGE + "**");
+        String classpathFile = System.getProperty("moon.test.classpathFile");
+        if (classpathFile != null) {
+            System.setProperty("java.class.path", Files.readString(Path.of(classpathFile)));
+        }
         ClassLoader loader = new Knot(EnvType.SERVER).init(new String[0]);
         loaded(loader, ENTITY_PACKAGE + "player.Player", "$moonDamage", "$moonTrueDamage");
         loaded(loader, ENTITY_PACKAGE + "LivingEntity", "$moonCooldown", "$moonBlocking", "$moonTrueDamage", "$moonAbsorption");
