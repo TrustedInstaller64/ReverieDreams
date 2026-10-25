@@ -314,3 +314,29 @@ tasks.register('testMusicDialog', JavaExec) {
 tasks.named('check') {
     dependsOn tasks.named('testMusicDialog')
 }
+
+['MoonDamageTracker', 'MoonDamageWeapons', 'MoonDamageCombat'].each { name ->
+    def testTask = tasks.register("test${name}", JavaExec) {
+        group = 'verification'
+        dependsOn tasks.named('testClasses')
+        classpath = sourceSets.test.runtimeClasspath
+        mainClass = "cc.thonly.reverie_dreams.server.${name}Test"
+        workingDir = layout.buildDirectory.dir("test-${name}").get().asFile
+        doFirst { workingDir.mkdirs() }
+    }
+    tasks.named('check') { dependsOn testTask }
+}
+
+tasks.register('testMoonDamageMixin', JavaExec) {
+    group = 'verification'
+    dependsOn tasks.named('testClasses')
+    dependsOn tasks.named('generateRemapClasspath')
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'cc.thonly.reverie_dreams.server.MoonDamageMixinTest'
+    systemProperty 'moon.test.projectDir', projectDir.absolutePath
+    systemProperty 'moon.test.buildDir', layout.buildDirectory.get().asFile.absolutePath
+    workingDir = layout.buildDirectory.dir('moon-mixin-test').get().asFile
+    doFirst { workingDir.mkdirs() }
+}
+
+tasks.named('check') { dependsOn tasks.named('testMoonDamageMixin') }

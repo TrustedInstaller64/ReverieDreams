@@ -10,6 +10,7 @@ import cc.thonly.reverie_dreams.data.danmaku.SpellcardRenderer;
 import cc.thonly.reverie_dreams.data.danmaku.spellcard.SpellCardFrameConfig;
 import cc.thonly.reverie_dreams.item.prop.MusicalInstrumentItem;
 import cc.thonly.reverie_dreams.recipe.ItemStackWrapper;
+import cc.thonly.reverie_dreams.util.codec.UUIDCodec;
 import com.mojang.serialization.Codec;
 import eu.pb4.polymer.core.api.other.PolymerComponent;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +22,13 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 public class RDDataComponents {
+    public static final DataComponentType<UUID> MOON_WEAPON_ID = registerComponent("moon_weapon_id",
+            DataComponentType.<UUID>builder().persistent(UUIDCodec.CODEC).build());
+
     public static final DataComponentType<DanmakuProperties> DANMAKU_PROPERTIES = registerComponent("danmaku_properties",
             DataComponentType.<DanmakuProperties>builder()
                     .persistent(DanmakuProperties.CODEC)

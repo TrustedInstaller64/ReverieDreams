@@ -238,28 +238,6 @@ public class ReverieDreams implements ModInitializer {
         });
 
         ItemPostHitCallback.EVENT.register((stack, target, attacker) -> {
-            MinecraftServer server = target.getServer();
-            ItemStack itemStack = attacker.getItemInHand(InteractionHand.MAIN_HAND);
-            if (server != null && !itemStack.isEmpty()) {
-                Level world = target.level();
-                RegistryAccess registryAccess = target.registryAccess();
-                Registry<Enchantment> enchantments = registryAccess.lookupOrThrow(Registries.ENCHANTMENT);
-                Holder.Reference<Enchantment> moonDamage = enchantments.getOrThrow(RDEnchantments.MOON_DAMAGE);
-                int itemEnchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(moonDamage, itemStack);
-                if (itemEnchantmentLevel != 0) {
-                    DelayedTask.create(server, 1, () -> {
-                        target.hurtTime = 0;
-                        if (target.getHealth() - itemEnchantmentLevel >= 0) {
-                            target.setHealth(target.getHealth() - itemEnchantmentLevel);
-                        }
-                        target.lastHurt = 0;
-                    });
-                }
-            }
-            return true;
-        });
-
-        ItemPostHitCallback.EVENT.register((stack, target, attacker) -> {
             Level level = attacker.level();
             if (level instanceof ServerLevel world && stack.getItem() instanceof YukaFlowerUmbrella) {
                 double speed = attacker.getDeltaMovement().length();
@@ -323,6 +301,7 @@ public class ReverieDreams implements ModInitializer {
 
     @SuppressWarnings("rawtypes")
     private void registerServerEvents() {
+        MoonDamageCombat.init();
         ServerChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> TouhouNotaUtils.stopChunk(world, chunk.getPos()));
         ServerWorldEvents.UNLOAD.register((server, world) -> TouhouNotaUtils.stopWorld(world));
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
