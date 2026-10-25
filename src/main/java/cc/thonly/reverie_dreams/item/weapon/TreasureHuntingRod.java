@@ -115,12 +115,12 @@ public class TreasureHuntingRod extends SwordItem {
                     player.displayClientMessage(Component.translatable("message.treasure_hunting_rod.not_found"), false);
                 }
 
-                // 伤害和冷却
+
                 if (!player.hasInfiniteMaterials()) {
                     stack.hurtWithoutBreaking(1, player);
                 }
 
-                cooldown.addCooldown(stack, 35); // 设置冷却
+                cooldown.addCooldown(stack, 35);
                 return InteractionResult.SUCCESS_SERVER;
             }
         }

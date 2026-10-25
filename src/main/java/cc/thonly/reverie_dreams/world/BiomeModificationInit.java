@@ -140,7 +140,7 @@ public class BiomeModificationInit {
                                 )
                         ).size();
 
-                        return nearbyCount < 3; // 附近 16x8x16 范围内少于 3 个才允许生成
+                        return nearbyCount < 3;
                     }
             );
             // 女仆妖精

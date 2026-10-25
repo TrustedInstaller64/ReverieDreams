@@ -56,9 +56,9 @@ public class NPCCleanMonsterGoal extends TargetGoal {
             return e.isAlive()&& EntityTargetUtil.canAttack(e,maid);
         });
 //        System.out.println(targets.size());
-        //处于工作原点水平方向拓展16格内的所有怪物
+
         targetEntity = serverWorld.getNearestEntity(targets, targetPredicate, this.maid, this.maid.getX(), this.maid.getEyeY(), this.maid.getZ());
-        //挑选离女仆最近的怪物
+
         return targetEntity!=null;
     }
     @Override

@@ -1,0 +1,358 @@
+{
+  "description": "Gameplay/design comments moved without executable token changes. Original line numbers refer to the pre-migration source.",
+  "files": [
+    {
+      "file": "src/main/java/cc/thonly/reverie_dreams/data/danmaku/spellcard/SpellCardFrameConfigs.java",
+      "code_sha256": "08c7380b177234501bba42f407b85f76265b5711039bd95282405c8071421e06",
+      "original_source_sha256": "8d9f34aad86cc495852a4066a17eeb2f704c412e15a49e2d6bf629c0d05217bb",
+      "migrated_comments": [
+        {
+          "original_line": 61,
+          "text": "// ========== 第一波：初始环形星弹 =========="
+        },
+        {
+          "original_line": 67,
+          "text": "// 几乎水平"
+        },
+        {
+          "original_line": 68,
+          "text": "// 全向环形"
+        },
+        {
+          "original_line": 74,
+          "text": "// ========== 第二波：交错火球层 =========="
+        },
+        {
+          "original_line": 78,
+          "text": "// 延迟出现"
+        },
+        {
+          "original_line": 81,
+          "text": "// 水平带轻微扰动"
+        },
+        {
+          "original_line": 91,
+          "text": "// 稍微往上"
+        },
+        {
+          "original_line": 98,
+          "text": "// ========== 第三波：爆发式多层散射 =========="
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/cc/thonly/reverie_dreams/data/danmaku/trajectory/BulletTrajectory.java",
+      "code_sha256": "f8aea123dba5bf56254cbc28a64a622f8cde1c17f3edbc429d78521f8d54ef7d",
+      "original_source_sha256": "580a1563042b037dd64a8473ac568b4e519e8971fb0978a7e01c66f7dc0e028f",
+      "migrated_comments": [
+        {
+          "original_line": 17,
+          "text": "// 层级从 -2 到 0"
+        },
+        {
+          "original_line": 18,
+          "text": "// 层与层之间的距离（Z轴偏移）"
+        },
+        {
+          "original_line": 19,
+          "text": "// 子弹左右间距"
+        },
+        {
+          "original_line": 22,
+          "text": "// 用于控制左右子弹个数（从外往中心）"
+        },
+        {
+          "original_line": 25,
+          "text": "// 只在边缘发射，形成镂空结构（跳过中间）"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/cc/thonly/reverie_dreams/data/danmaku/trajectory/RingTrajectory.java",
+      "code_sha256": "85913dbed07570ce6a0c2db00fb22d05a3ebddbef82692a0506fe1be9f7c47ee",
+      "original_source_sha256": "b39c7a1c4fca698739c93513b5c70e8fc4334998bf4dbec1c835a4474acfa825",
+      "migrated_comments": [
+        {
+          "original_line": 11,
+          "text": "// 子弹数量"
+        },
+        {
+          "original_line": 12,
+          "text": "// 半径（格）"
+        },
+        {
+          "original_line": 13,
+          "text": "// 起始角度偏移"
+        },
+        {
+          "original_line": 14,
+          "text": "// 是否朝外发射"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/cc/thonly/reverie_dreams/data/danmaku/trajectory/RoundTrajectory.java",
+      "code_sha256": "7faf9dab669fcb09744cdf7aa8fddd7501909ed07cc3dc0c9115e798d447800b",
+      "original_source_sha256": "1dff489b5789cab5bd9c6205eba32d748311c89edbfb374bf96e3946c386dd6f",
+      "migrated_comments": [
+        {
+          "original_line": 14,
+          "text": "// 子弹数量"
+        },
+        {
+          "original_line": 15,
+          "text": "// 环形半径"
+        },
+        {
+          "original_line": 16,
+          "text": "// 起始角度偏移"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/cc/thonly/reverie_dreams/entity/ai/goal/NPCOpenDoorGoal.java",
+      "code_sha256": "2aee931307a092083ec513b6f61a542cace7f2f134492d0ee78fa4acb5eaaed6",
+      "original_source_sha256": "7c3ce0928da6af8ac5d6bb759e04e3bcd0538fc8f74d622d327266d7e61c0956",
+      "migrated_comments": [
+        {
+          "original_line": 81,
+          "text": "// 停止时如果门还开着就关门"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/cc/thonly/reverie_dreams/entity/ai/goal/NPCOpenSilverChestGoal.java",
+      "code_sha256": "ae799658c0eeb46ee9b9e414eab7aea229bb81e2a48b4b928b22bb036cd684ad",
+      "original_source_sha256": "cd05242360d0e8bc35dbcd221a81b09648df7b5e043d701a0e22b64a505b4f42",
+      "migrated_comments": [
+        {
+          "original_line": 150,
+          "text": "// 半径 3 格"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/cc/thonly/reverie_dreams/entity/ai/goal/work/NPCChestClassificationGoal.java",
+      "code_sha256": "b158b95a02fe6cd68f4f02102201042c969cf23137054f43ce19ba90711b35f2",
+      "original_source_sha256": "5089d4fc0c28d3c72db675d0d113176b94c1ed4a4bf8a74609718b0f35129516",
+      "migrated_comments": [
+        {
+          "original_line": 248,
+          "text": "// 放一堆或全部（视需求可改为只放1）"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/cc/thonly/reverie_dreams/entity/ai/goal/work/NPCCleanMonsterGoal.java",
+      "code_sha256": "4e2253c189c9e8b50abf5bb747fc0332c7f426569aa85ef51f434b759f6748b3",
+      "original_source_sha256": "754958202ebeaa84571a170e96c41e5d16afba1744f0231ea71ee6b19753273a",
+      "migrated_comments": [
+        {
+          "original_line": 59,
+          "text": "//处于工作原点水平方向拓展16格内的所有怪物"
+        },
+        {
+          "original_line": 61,
+          "text": "//挑选离女仆最近的怪物"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/cc/thonly/reverie_dreams/entity/ai/goal/work/NPCCloseToCropGoal.java",
+      "code_sha256": "deadf1fcb72bf4344701bba3407ecf8f45171c1281651526127b22f735d69e3b",
+      "original_source_sha256": "50edbe53b91d4a71b769b9f96c5d5c2113d2c5831d23e8af025327f64a017755",
+      "migrated_comments": [
+        {
+          "original_line": 99,
+          "text": "//寻路 农田按照平面考虑 应该不会有人在啥阴间的地方让女仆工作吧"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/cc/thonly/reverie_dreams/entity/ai/goal/work/NPCFarmGoal.java",
+      "code_sha256": "65c1462e674380ed0eb3aaab38b634d107c9329ee0a99bf877aaa7e13d479179",
+      "original_source_sha256": "35c7090f40ed22a4725e4814081f545aa7e4fdd9a55cbfcbf37f3e3d8ecf29ba",
+      "migrated_comments": [
+        {
+          "original_line": 34,
+          "text": "//计时器 避免种植太快显得不是人"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/cc/thonly/reverie_dreams/entity/ai/goal/work/NPCSmeltGoal.java",
+      "code_sha256": "f1e8e9bd1eb93cfdcaa65ddc2c7b22b883aadce8f2a3dc839bedb6309b35c18a",
+      "original_source_sha256": "7a45d0c6a18dad9c7d56cec817db424e5ee33e6ea8f812cf7b7f194332533e13",
+      "migrated_comments": [
+        {
+          "original_line": 210,
+          "text": "// 半径 3 格"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/cc/thonly/reverie_dreams/entity/elemental/IceElementalEntity.java",
+      "code_sha256": "bb6b3ca96333aa80fb5774253f75a0620c05cea9a46cc4e80eb3dff7a0491db4",
+      "original_source_sha256": "349e3061fe4dd4596f7cd0d3981b44922cd023afbd98e091df71b10b847405ad",
+      "migrated_comments": [
+        {
+          "original_line": 135,
+          "text": "// 光照条件（火把等会提高亮度）"
+        },
+        {
+          "original_line": 138,
+          "text": "// 世界时间（0~23999，0~12000 白天，12000~23999 夜晚）"
+        },
+        {
+          "original_line": 140,
+          "text": "// 晚上时间段"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/cc/thonly/reverie_dreams/entity/misc/DanmakuEntity.java",
+      "code_sha256": "8debd87491467f0e00ec797c0e1eeb8cea7ccf88af6efc1d692b1f8047ac663d",
+      "original_source_sha256": "339805ef8510c38ab586e80ef2bf3b131b4f2f63b1c3ffd2e5c4f3c1db73d605",
+      "migrated_comments": [
+        {
+          "original_line": 406,
+          "text": "// ④ 给一个小容错（比如 +5°）"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/cc/thonly/reverie_dreams/entity/npc/BaseNPCLikeEntity.java",
+      "code_sha256": "dda6dd76ac841fe1658fccb31db418a014ac76f2daa036144965cfcf2ed855ab",
+      "original_source_sha256": "57d9bdd31a78169217b5d5f79688b4eafb8619b933fe40181fbcf8a2f91da9f1",
+      "migrated_comments": [
+        {
+          "original_line": 609,
+          "text": "//无法检测具体行为 按0.015计算 略微提高消耗"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/cc/thonly/reverie_dreams/entity/villager/MoneyShopClerk.java",
+      "code_sha256": "72e57c35e2ff0903dedac8a267fe032e10abe7163193561ab33ed18994ab02b0",
+      "original_source_sha256": "4c5771ffb048d6d7e10ab7ae79c2e5bad4a8698b12d26b9985e494725381417c",
+      "migrated_comments": [
+        {
+          "original_line": 20,
+          "text": "// 等级 1：铜 <-> 银"
+        },
+        {
+          "original_line": 22,
+          "text": "// 铜 → 银"
+        },
+        {
+          "original_line": 27,
+          "text": "// 最大交易次数"
+        },
+        {
+          "original_line": 28,
+          "text": "// 村民经验"
+        },
+        {
+          "original_line": 31,
+          "text": "// 银 → 铜"
+        },
+        {
+          "original_line": 42,
+          "text": "// 等级 2：银 <-> 金"
+        },
+        {
+          "original_line": 44,
+          "text": "// 银 → 金"
+        },
+        {
+          "original_line": 53,
+          "text": "// 金 → 银"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/cc/thonly/reverie_dreams/entity/villager/MystiaModOffers.java",
+      "code_sha256": "f03c5fbe24419e9c1fc5e10db7cd7da60046d32975d45da375649d8850326717",
+      "original_source_sha256": "fa1c9925449df59830f1969480bc61181d04fcc8b63878af8a2350fd9061e1c6",
+      "migrated_comments": [
+        {
+          "original_line": 37,
+          "text": "// Lv.2：常见农作物，便宜交易"
+        },
+        {
+          "original_line": 55,
+          "text": "// Lv.3：中等水果"
+        },
+        {
+          "original_line": 68,
+          "text": "// Lv.4：稀有水果"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/cc/thonly/reverie_dreams/item/weapon/TreasureHuntingRod.java",
+      "code_sha256": "736c673c6aa1509f1e7546edcb3e437e8a1e6b43fac3fe659aa690da46c0c3d8",
+      "original_source_sha256": "f9ece42b01bec417d36b6017160832ccedd8d3b0b9a4417c40e116caee4907fa",
+      "migrated_comments": [
+        {
+          "original_line": 118,
+          "text": "// 伤害和冷却"
+        },
+        {
+          "original_line": 123,
+          "text": "// 设置冷却"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/cc/thonly/reverie_dreams/world/BiomeModificationInit.java",
+      "code_sha256": "cc3e68ffd7fe8d06bcaaef205ec131ef5bcdc96a001dc21c6ab9e1988ee1ac0d",
+      "original_source_sha256": "20a4b8daabd5576b5f896c3ced8cdadb8d174a5b8a016e9b24ef002a750647d3",
+      "migrated_comments": [
+        {
+          "original_line": 143,
+          "text": "// 附近 16x8x16 范围内少于 3 个才允许生成"
+        }
+      ]
+    },
+    {
+      "file": "src/main/java/cc/thonly/reverie_dreams/world/gen/feature/FloatingIslandFeature.java",
+      "code_sha256": "9cbc28520ea5e805fd65336a862910f0e216bbd038b33dbd638de026dcfa90fc",
+      "original_source_sha256": "a53f41591971da6007fea90f825d7f8a8fd07954ef1b3c94a4938488d4a993d7",
+      "migrated_comments": [
+        {
+          "original_line": 21,
+          "text": "// 顶面海拔：100~160"
+        },
+        {
+          "original_line": 24,
+          "text": "// 生成几个“半椭球”并叠加，顶面统一用同一平面（oy = 0 保证平顶）"
+        },
+        {
+          "original_line": 44,
+          "text": "// 20% 概率额外放草"
+        },
+        {
+          "original_line": 56,
+          "text": "// 每个岛 5~12 个装饰"
+        },
+        {
+          "original_line": 57,
+          "text": "// 限制树苗数量"
+        },
+        {
+          "original_line": 82,
+          "text": "// 小水塘（2×2 或 3×3）"
+        },
+        {
+          "original_line": 100,
+          "text": "/**\n     * 以 topCenter 为顶面中心（y=0），向“下方”生成半椭球。\n     * 顶面整片为草；往下 2 层为泥土；更下为石头。\n     */"
+        },
+        {
+          "original_line": 123,
+          "text": "// 顶面：整片草；如果你想避免覆盖已有方块，可先判断 isAir"
+        }
+      ]
+    }
+  ]
+}

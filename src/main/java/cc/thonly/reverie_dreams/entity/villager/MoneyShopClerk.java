@@ -17,18 +17,18 @@ public class MoneyShopClerk {
         return gold * SILVER_PER_GOLD * COPPER_PER_SILVER + silver * COPPER_PER_SILVER + copper;
     }
     public static void registers() {
-        // 等级 1：铜 <-> 银
+
         TradeOfferHelper.registerVillagerOffers(RDVillagerProfessions.MONEY_SHOP_CLERK, 1, factories -> {
-            // 铜 → 银
+
             factories.add((entity, random) -> new MerchantOffer(
                     new ItemCost(RDItems.COPPER_COIN, COPPER_PER_SILVER),
                     Optional.empty(),
                     new ItemStack(RDItems.SILVER_COIN, 1),
-                    16, // 最大交易次数
-                    2,  // 村民经验
+                    16,
+                    2,
                     PRICE_MULTIPLIER
             ));
-            // 银 → 铜
+
             factories.add((entity, random) -> new MerchantOffer(
                     new ItemCost(RDItems.SILVER_COIN, 1),
                     Optional.empty(),
@@ -39,9 +39,9 @@ public class MoneyShopClerk {
             ));
         });
 
-        // 等级 2：银 <-> 金
+
         TradeOfferHelper.registerVillagerOffers(RDVillagerProfessions.MONEY_SHOP_CLERK, 2, factories -> {
-            // 银 → 金
+
             factories.add((entity, random) -> new MerchantOffer(
                     new ItemCost(RDItems.SILVER_COIN, SILVER_PER_GOLD),
                     Optional.empty(),
@@ -50,7 +50,7 @@ public class MoneyShopClerk {
                     5,
                     PRICE_MULTIPLIER
             ));
-            // 金 → 银
+
             factories.add((entity, random) -> new MerchantOffer(
                     new ItemCost(RDItems.GOLD_COIN, 1),
                     Optional.empty(),

@@ -78,7 +78,7 @@ public class NPCOpenDoorGoal extends Goal {
     @Override
     public void stop() {
         if (this.doorPos != null && this.hasOpened) {
-            // 停止时如果门还开着就关门
+
             BlockState state = this.roleEntity.level().getBlockState(this.doorPos);
             Boolean isOpen = state.getValue(DoorBlock.OPEN);
             if (state.getBlock() instanceof DoorBlock doorBlock && isOpen) {

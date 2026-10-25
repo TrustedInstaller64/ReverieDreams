@@ -58,27 +58,27 @@ public class SpellCardFrameConfigs {
     public static List<List<SpellCardFrameConfig>> createFancySpellcardTest() {
         List<List<SpellCardFrameConfig>> frames = new ArrayList<>();
 
-        // ========== 第一波：初始环形星弹 ==========
+
         List<SpellCardFrameConfig> wave1 = List.of(
                 new SpellCardFrameConfig(DanmakuTypes.STAR)
                         .withDensity(48)
                         .withTickInterval(5)
                         .withTickDuration(60)
-                        .withPitchStartAt(-10, 10)    // 几乎水平
-                        .withYawStartAt(-180, 180)    // 全向环形
+                        .withPitchStartAt(-10, 10)
+                        .withYawStartAt(-180, 180)
                         .withSpeed(0.6f)
                         .setRandomColor()
         );
         frames.add(wave1);
 
-        // ========== 第二波：交错火球层 ==========
+
         List<SpellCardFrameConfig> wave2 = List.of(
                 new SpellCardFrameConfig(DanmakuTypes.FIREBALL)
                         .withDensity(32)
-                        .withTickDelay(80)             // 延迟出现
+                        .withTickDelay(80)
                         .withTickInterval(4)
                         .withTickDuration(60)
-                        .withPitchStartAt(-5, 5)       // 水平带轻微扰动
+                        .withPitchStartAt(-5, 5)
                         .withYawStartAt(-180, 180)
                         .withSpeed(0.8f)
                         .setRandomColor(),
@@ -88,14 +88,14 @@ public class SpellCardFrameConfigs {
                         .withTickDelay(80)
                         .withTickInterval(4)
                         .withTickDuration(60)
-                        .withPitchStartAt(10, 30)      // 稍微往上
+                        .withPitchStartAt(10, 30)
                         .withYawStartAt(-180, 180)
                         .withSpeed(0.9f)
                         .setRandomColor()
         );
         frames.add(wave2);
 
-        // ========== 第三波：爆发式多层散射 ==========
+
         List<SpellCardFrameConfig> wave3 = List.of(
                 new SpellCardFrameConfig(DanmakuTypes.BALL)
                         .withDensity(40)

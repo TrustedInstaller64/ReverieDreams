@@ -11,9 +11,9 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 public class RoundTrajectory extends DanmakuTrajectory {
-    private static final int BULLET_COUNT = 12;     // 子弹数量
-    private static final float RADIUS = 1f;         // 环形半径
-    private static final float ANGLE_OFFSET = 0f;   // 起始角度偏移
+    private static final int BULLET_COUNT = 12;
+    private static final float RADIUS = 1f;
+    private static final float ANGLE_OFFSET = 0f;
 
     @Override
     public void run(ServerLevel world, @Nullable LivingEntity livingEntity, ItemStack stack,

@@ -18,10 +18,10 @@ public class FloatingIslandFeature extends Feature<NoneFeatureConfiguration> {
     @Override
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> ctx) {
         LevelAccessor world = ctx.level();
-        // 顶面海拔：100~160
+
         BlockPos topPlane = ctx.origin().above(100 + world.getRandom().nextInt(60));
 
-        // 生成几个“半椭球”并叠加，顶面统一用同一平面（oy = 0 保证平顶）
+
         for (int i = 0; i < 5; i++) {
             int rx = 8 + world.getRandom().nextInt(6);
             int ry = 4 + world.getRandom().nextInt(3);
@@ -41,7 +41,7 @@ public class FloatingIslandFeature extends Feature<NoneFeatureConfiguration> {
     private void sprinkleGrass(LevelAccessor world, BlockPos topCenter, int rx, int rz, RandomSource random) {
         for (int x = -rx; x <= rx; x++) {
             for (int z = -rz; z <= rz; z++) {
-                if (random.nextFloat() < 0.1f) { // 20% 概率额外放草
+                if (random.nextFloat() < 0.1f) {
                     BlockPos pos = topCenter.offset(x, 0, z);
                     if (world.getBlockState(pos).is(Blocks.GRASS_BLOCK) && world.isEmptyBlock(pos.above())) {
                         world.setBlock(pos.above(), Blocks.TALL_GRASS.defaultBlockState(), 3);
@@ -53,8 +53,8 @@ public class FloatingIslandFeature extends Feature<NoneFeatureConfiguration> {
 
 
     private void decorateTop(LevelAccessor world, BlockPos topCenter, int rx, int rz, RandomSource random) {
-        int decorations = 5 + random.nextInt(8); // 每个岛 5~12 个装饰
-        int saplingCount = 0; // 限制树苗数量
+        int decorations = 5 + random.nextInt(8);
+        int saplingCount = 0;
 
         for (int i = 0; i < decorations; i++) {
             int x = random.nextInt(rx * 2 + 1) - rx;
@@ -79,7 +79,7 @@ public class FloatingIslandFeature extends Feature<NoneFeatureConfiguration> {
                     }
                 }
                 case 3 -> {
-                    // 小水塘（2×2 或 3×3）
+
                     int size = random.nextBoolean() ? 2 : 3;
                     for (int dx = 0; dx < size; dx++) {
                         for (int dz = 0; dz < size; dz++) {
@@ -97,10 +97,10 @@ public class FloatingIslandFeature extends Feature<NoneFeatureConfiguration> {
 
 
 
-    /**
-     * 以 topCenter 为顶面中心（y=0），向“下方”生成半椭球。
-     * 顶面整片为草；往下 2 层为泥土；更下为石头。
-     */
+
+
+
+
     private void generateHemisphereDownFlatTop(LevelAccessor world, BlockPos topCenter, int rx, int ry, int rz) {
         // 遍历顶面投影的椭圆盘
         for (int x = -rx; x <= rx; x++) {
@@ -120,7 +120,7 @@ public class FloatingIslandFeature extends Feature<NoneFeatureConfiguration> {
                     BlockPos pos = topCenter.offset(x, dy, z);
 
                     if (dy == 0) {
-                        // 顶面：整片草；如果你想避免覆盖已有方块，可先判断 isAir
+
                         world.setBlock(pos, Blocks.GRASS_BLOCK.defaultBlockState(), 3);
                     } else if (dy >= -2) {
                         world.setBlock(pos, Blocks.DIRT.defaultBlockState(), 3);

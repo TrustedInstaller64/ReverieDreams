@@ -8,10 +8,10 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public class RingTrajectory extends DanmakuTrajectory {
-    private static final int BULLET_COUNT = 24;     // 子弹数量
-    private static final float RADIUS = 1f;        // 半径（格）
-    private static final float ANGLE_OFFSET = 0f;    // 起始角度偏移
-    private static final boolean FACE_OUTWARD = true; // 是否朝外发射
+    private static final int BULLET_COUNT = 24;
+    private static final float RADIUS = 1f;
+    private static final float ANGLE_OFFSET = 0f;
+    private static final boolean FACE_OUTWARD = true;
 
     @Override
     public void run(ServerLevel world, @Nullable LivingEntity livingEntity, ItemStack stack,

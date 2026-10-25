@@ -403,7 +403,7 @@ public class DanmakuEntity extends AbstractArrow {
                             double dot = Mth.clamp(look2D.dot(toProj2D), -1.0, 1.0);
                             double angle = Math.toDegrees(Math.acos(dot));
 
-                            // ④ 给一个小容错（比如 +5°）
+
                             if (angle <= (blockingAngle / 2.0F) + 5.0F) {
                                 isInAttackRange = true;
                                 break; // 找到一个满足条件的就可以退出循环了

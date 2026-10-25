@@ -1,5 +1,7 @@
 # 月伤策划：剑与锋利 V 的伤害基准
 
+> 历史讨论／源码或算例快照。本文保留记录当时状态；当前实施规则以 [current-rules.md](current-rules.md) 为准，实施步骤见 [implementation-plan.md](implementation-plan.md)。
+
 日期：2026-10-25。目标 Minecraft Java Edition 1.21.8。只做源码核对与公式计算，未修改战斗代码、未编译或重建测试服。
 
 ## 条件与证据范围

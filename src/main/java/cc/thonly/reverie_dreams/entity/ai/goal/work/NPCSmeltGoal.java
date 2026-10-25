@@ -207,7 +207,7 @@ public class NPCSmeltGoal extends Goal {
 
     private boolean isReached(BlockPos blockPos) {
         double distSq = blockPos.distToCenterSqr(this.roleEntity.position());
-        return distSq <= 9; // 半径 3 格
+        return distSq <= 9;
     }
 
     /** 保存目标信息 */

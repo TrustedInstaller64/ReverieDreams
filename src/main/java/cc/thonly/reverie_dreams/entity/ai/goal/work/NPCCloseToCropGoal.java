@@ -96,7 +96,7 @@ public class NPCCloseToCropGoal extends Goal {
 
 
 
-    //寻路 农田按照平面考虑 应该不会有人在啥阴间的地方让女仆工作吧
+
 
 
     private BlockPos getNextGoal(){

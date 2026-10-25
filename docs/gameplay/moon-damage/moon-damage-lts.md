@@ -1,5 +1,7 @@
 # 月伤 III：LTS 源码实际行为
 
+> 历史讨论／源码或算例快照。本文保留记录当时状态；当前实施规则以 [current-rules.md](current-rules.md) 为准，实施步骤见 [implementation-plan.md](implementation-plan.md)。
+
 本说明对应本分支的 0.4.10 LTS / Minecraft 1.21.8。当前修复没有改变月伤附魔的结算或强度。
 
 后续机制提案、平衡算例与待定事项保存在 [月伤机制讨论保留稿](moon-damage-design-discussion.md)，尚未实施。

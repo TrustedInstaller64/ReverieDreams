@@ -31,7 +31,7 @@ import java.util.function.Predicate;
 public class NPCFarmGoal extends Goal {
 
 
-    //计时器 避免种植太快显得不是人
+
     private int workTimer = 0;
 
 

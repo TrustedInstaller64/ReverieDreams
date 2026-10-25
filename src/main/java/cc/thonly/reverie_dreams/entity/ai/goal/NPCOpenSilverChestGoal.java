@@ -147,7 +147,7 @@ public class NPCOpenSilverChestGoal extends Goal {
 
     private boolean isReached(BlockPos blockPos) {
         double distanceSq = blockPos.distToCenterSqr(this.roleEntity.position());
-        return distanceSq <= 9; // 半径 3 格
+        return distanceSq <= 9;
     }
 
     @Override

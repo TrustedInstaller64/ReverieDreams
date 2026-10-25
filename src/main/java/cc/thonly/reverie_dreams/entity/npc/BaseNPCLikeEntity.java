@@ -606,7 +606,7 @@ public abstract class BaseNPCLikeEntity extends AbstractNPCEntity implements Ran
             }
             this.exhaustionLevel += (float) (hungerEffectLevel * 0.1);
             if (this.getNavigation().isInProgress()) {
-                this.exhaustionLevel += 0.015F;//无法检测具体行为 按0.015计算 略微提高消耗
+                this.exhaustionLevel += 0.015F;
                 // System.out.println("寻路增加消耗");
             }
         }

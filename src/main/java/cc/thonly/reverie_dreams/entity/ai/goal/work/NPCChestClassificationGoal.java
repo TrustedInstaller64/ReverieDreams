@@ -245,7 +245,7 @@ public class NPCChestClassificationGoal extends Goal {
 
         // 放入逻辑：计算实际放入数量 move
         if (chestStack.isEmpty()) {
-            int move = Math.min(held.getCount(), held.getMaxStackSize()); // 放一堆或全部（视需求可改为只放1）
+            int move = Math.min(held.getCount(), held.getMaxStackSize());
             ItemStack toSet = held.copy();
             toSet.setCount(move);
             chest.setItem(slotIndex, toSet);

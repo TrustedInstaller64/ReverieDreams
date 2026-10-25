@@ -34,7 +34,7 @@ public class MystiaModOffers {
 
         });
         TradeOfferHelper.registerVillagerOffers(VillagerProfession.FARMER, 2, factories -> {
-            // Lv.2：常见农作物，便宜交易
+
             factories.add((e, r) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 2),
                     new ItemStack(RDIngredientItems.STICKY_RICE, 4),
@@ -52,7 +52,7 @@ public class MystiaModOffers {
             ));
         });
         TradeOfferHelper.registerVillagerOffers(VillagerProfession.FARMER, 3, factories -> {
-            // Lv.3：中等水果
+
             factories.add((e, r) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 4),
                     new ItemStack(RDIngredientItems.CHESTNUT, 5),
@@ -65,7 +65,7 @@ public class MystiaModOffers {
             ));
         });
         TradeOfferHelper.registerVillagerOffers(VillagerProfession.FARMER, 4, factories -> {
-            // Lv.4：稀有水果
+
             factories.add((e, r) -> new MerchantOffer(
                     new ItemCost(Items.EMERALD, 11),
                     new ItemStack(RDIngredientItems.PUFF_YO_FRUIT, 4),
