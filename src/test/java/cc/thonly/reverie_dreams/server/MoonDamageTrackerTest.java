@@ -35,11 +35,35 @@ public class MoonDamageTrackerTest {
     }
 
     private static MoonDamageTracker seededTargets() {
+        return seededTargets(true);
+    }
+
+    private static MoonDamageTracker seededTargets(boolean trueApplied) {
         MoonDamageTracker tracker = new MoonDamageTracker();
-        for (int n = 0; n < 4; n++) accept(tracker, WEAPON, TARGET, true, n * 6);
-        for (int n = 0; n < 4; n++) accept(tracker, WEAPON, OTHER_TARGET, true, 24 + n * 6);
-        near(accept(tracker, WEAPON, TARGET, true, 48).trueDamage(), 2);
+        for (int n = 0; n < 4; n++) accept(tracker, WEAPON, TARGET, true, n * 10);
+        accept(tracker, WEAPON, OTHER_TARGET, true, 40);
+        accept(tracker, WEAPON, OTHER_TARGET, true, 50);
+        MoonDamageTracker.PendingHit fifth = hit(tracker, WEAPON, TARGET, true, 60);
+        near(fifth.trueDamage(), 2);
+        check(tracker.accept(fifth, trueApplied), "seed fifth rejected");
+        accept(tracker, WEAPON, OTHER_TARGET, true, 70);
+        accept(tracker, WEAPON, OTHER_TARGET, true, 80);
         return tracker;
+    }
+
+    private static long trueTick(MoonDamageTracker tracker) {
+        try {
+            var weapons = MoonDamageTracker.class.getDeclaredField("weapons");
+            weapons.setAccessible(true);
+            Object state = ((java.util.Map<?, ?>) weapons.get(tracker)).get(WEAPON);
+            var hasTick = state.getClass().getDeclaredField("hasTrueTick");
+            var tick = state.getClass().getDeclaredField("trueTick");
+            hasTick.setAccessible(true);
+            tick.setAccessible(true);
+            return hasTick.getBoolean(state) ? tick.getLong(state) : -1;
+        } catch (ReflectiveOperationException e) {
+            throw new AssertionError(e);
+        }
     }
 
     public static void main(String[] args) {
@@ -59,11 +83,11 @@ public class MoonDamageTrackerTest {
             check(tracker.size() == 0, "prepare allocated retained state");
             check(!accept(tracker, WEAPON, TARGET, true, 0).fifth(), "failed hits counted");
         });
-        run("player six tick boundary", () -> {
+        run("player ten tick boundary", () -> {
             MoonDamageTracker tracker = new MoonDamageTracker();
             accept(tracker, WEAPON, TARGET, true, 0);
-            check(hit(tracker, WEAPON, OTHER_TARGET, true, 5) == null, "target switch reset interval");
-            check(hit(tracker, WEAPON, TARGET, true, 6) != null, "sixth tick rejected");
+            check(hit(tracker, WEAPON, OTHER_TARGET, true, 9) == null, "target switch reset interval");
+            check(hit(tracker, WEAPON, TARGET, true, 10) != null, "tenth tick rejected");
         });
         run("nonplayer one tick boundary", () -> {
             MoonDamageTracker tracker = new MoonDamageTracker();
@@ -79,12 +103,12 @@ public class MoonDamageTrackerTest {
         });
         run("pvp fifth substitutes capped true damage", () -> {
             MoonDamageTracker tracker = new MoonDamageTracker();
-            for (int n = 0; n < 4; n++) near(accept(tracker, WEAPON, TARGET, true, n * 6).normalDamage(), 3);
-            MoonDamageTracker.PendingHit fifth = accept(tracker, WEAPON, TARGET, true, 24);
+            for (int n = 0; n < 4; n++) near(accept(tracker, WEAPON, TARGET, true, n * 10).normalDamage(), 3);
+            MoonDamageTracker.PendingHit fifth = accept(tracker, WEAPON, TARGET, true, 40);
             check(fifth.fifth(), "fifth not recognized");
             near(fifth.normalDamage(), 0);
             near(fifth.trueDamage(), 2);
-            check(!accept(tracker, WEAPON, TARGET, true, 30).fifth(), "fifth reused old layers");
+            check(!accept(tracker, WEAPON, TARGET, true, 50).fifth(), "fifth reused old layers");
         });
         run("pve fifth crosses targets", () -> {
             MoonDamageTracker tracker = new MoonDamageTracker();
@@ -96,9 +120,9 @@ public class MoonDamageTrackerTest {
         });
         run("pvp target layers remain separate", () -> {
             MoonDamageTracker tracker = new MoonDamageTracker();
-            for (int n = 0; n < 4; n++) accept(tracker, WEAPON, TARGET, true, n * 6);
-            check(!accept(tracker, WEAPON, OTHER_TARGET, true, 24).fifth(), "different target inherited layers");
-            check(accept(tracker, WEAPON, TARGET, true, 30).fifth(), "original target lost layers");
+            for (int n = 0; n < 4; n++) accept(tracker, WEAPON, TARGET, true, n * 10);
+            check(!accept(tracker, WEAPON, OTHER_TARGET, true, 40).fifth(), "different target inherited layers");
+            check(accept(tracker, WEAPON, TARGET, true, 50).fifth(), "original target lost layers");
         });
         run("pvp and pve intervals and counters stay separate", () -> {
             MoonDamageTracker tracker = new MoonDamageTracker();
@@ -109,7 +133,7 @@ public class MoonDamageTrackerTest {
         run("low tiers cannot convert player fifth to true", () -> {
             MoonDamageTracker tracker = new MoonDamageTracker();
             for (int n = 0; n < 5; n++) {
-                MoonDamageTracker.PendingHit hit = tracker.prepare(WEAPON, TARGET, true, "minecraft:iron_sword", 3, 0.75f, false, n * 6, true);
+                MoonDamageTracker.PendingHit hit = tracker.prepare(WEAPON, TARGET, true, "minecraft:iron_sword", 3, 0.75f, false, n * 10, true);
                 check(hit != null, "low tier rejected");
                 near(hit.normalDamage(), 2.25f);
                 near(hit.trueDamage(), 0);
@@ -120,7 +144,7 @@ public class MoonDamageTrackerTest {
             MoonDamageTracker tracker = new MoonDamageTracker();
             MoonDamageTracker.PendingHit fifth = null;
             for (int n = 0; n < 5; n++) {
-                fifth = tracker.prepare(WEAPON, TARGET, true, "minecraft:netherite_sword", 3, 1, true, n * 6, false);
+                fifth = tracker.prepare(WEAPON, TARGET, true, "minecraft:netherite_sword", 3, 1, true, n * 10, false);
                 check(tracker.accept(fifth, fifth.trueDamage() > 0), "day hit not committed");
             }
             near(fifth.trueDamage(), 1.125f);
@@ -138,27 +162,23 @@ public class MoonDamageTrackerTest {
         });
         run("rolling window retains recent hits after oldest expires", () -> {
             MoonDamageTracker tracker = new MoonDamageTracker();
-            for (long tick : new long[]{0, 40, 46, 52, 61}) check(!accept(tracker, WEAPON, TARGET, true, tick).fifth(), "expired first hit counted");
-            check(accept(tracker, WEAPON, TARGET, true, 67).fifth(), "recent hits erased with oldest");
+            for (long tick : new long[]{0, 30, 40, 50, 61}) check(!accept(tracker, WEAPON, TARGET, true, tick).fifth(), "expired first hit counted");
+            check(accept(tracker, WEAPON, TARGET, true, 71).fifth(), "recent hits erased with oldest");
         });
-        run("true cooldown spans all player targets at tick twenty nine", () -> {
+        run("target switch cannot bypass interval before the true cooldown boundary", () -> {
             MoonDamageTracker tracker = seededTargets();
-            MoonDamageTracker.PendingHit blocked = accept(tracker, WEAPON, OTHER_TARGET, true, 77);
-            check(blocked.fifth(), "candidate fifth missing");
-            near(blocked.normalDamage(), 3);
-            near(blocked.trueDamage(), 0);
-            check(!accept(tracker, WEAPON, OTHER_TARGET, true, 83).fifth(), "blocked fifth retained stack");
+            check(trueTick(tracker) == 60, "true cooldown did not follow the weapon");
+            check(hit(tracker, WEAPON, OTHER_TARGET, true, 89) == null, "target switch bypassed ten tick interval");
+            check(accept(tracker, WEAPON, OTHER_TARGET, true, 90).fifth(), "rejected early hit consumed layers");
         });
         run("true cooldown permits exactly thirty ticks", () -> {
             MoonDamageTracker tracker = seededTargets();
-            near(accept(tracker, WEAPON, OTHER_TARGET, true, 78).trueDamage(), 2);
+            near(accept(tracker, WEAPON, OTHER_TARGET, true, 90).trueDamage(), 2);
         });
         run("unapplied true damage does not start true cooldown", () -> {
-            MoonDamageTracker tracker = new MoonDamageTracker();
-            for (int n = 0; n < 4; n++) accept(tracker, WEAPON, TARGET, true, n * 6);
-            for (int n = 0; n < 4; n++) accept(tracker, WEAPON, OTHER_TARGET, true, 24 + n * 6);
-            check(tracker.accept(hit(tracker, WEAPON, TARGET, true, 48), false), "unapplied fifth failed to consume hit");
-            near(accept(tracker, WEAPON, OTHER_TARGET, true, 54).trueDamage(), 2);
+            MoonDamageTracker tracker = seededTargets(false);
+            check(trueTick(tracker) == -1, "unapplied true damage started cooldown");
+            near(accept(tracker, WEAPON, OTHER_TARGET, true, 90).trueDamage(), 2);
         });
         run("duplicate or stale pending hits cannot commit twice", () -> {
             MoonDamageTracker tracker = new MoonDamageTracker();
@@ -170,34 +190,35 @@ public class MoonDamageTrackerTest {
         });
         run("profile change clears layers but preserves interval", () -> {
             MoonDamageTracker tracker = new MoonDamageTracker();
-            for (int n = 0; n < 4; n++) accept(tracker, WEAPON, TARGET, true, n * 6);
-            check(tracker.prepare(WEAPON, TARGET, true, "other:sword", 3, 0.9f, true, 23, true) == null, "new profile refreshed interval");
-            MoonDamageTracker.PendingHit changed = tracker.prepare(WEAPON, TARGET, true, "other:sword", 3, 0.9f, true, 24, true);
+            for (int n = 0; n < 4; n++) accept(tracker, WEAPON, TARGET, true, n * 10);
+            check(tracker.prepare(WEAPON, TARGET, true, "other:sword", 3, 0.9f, true, 39, true) == null, "new profile refreshed interval");
+            MoonDamageTracker.PendingHit changed = tracker.prepare(WEAPON, TARGET, true, "other:sword", 3, 0.9f, true, 40, true);
             check(changed != null && !changed.fifth(), "item profile inherited four hits");
             check(tracker.accept(changed, false), "new profile rejected");
-            MoonDamageTracker.PendingHit level = tracker.prepare(WEAPON, TARGET, true, "other:sword", 2, 0.9f, true, 30, true);
+            MoonDamageTracker.PendingHit level = tracker.prepare(WEAPON, TARGET, true, "other:sword", 2, 0.9f, true, 50, true);
             check(level != null && !level.fifth(), "level change inherited stack");
             near(level.normalDamage(), 1.8f);
         });
         run("profile change preserves player true cooldown", () -> {
             MoonDamageTracker tracker = seededTargets();
             for (int n = 0; n < 5; n++) {
-                MoonDamageTracker.PendingHit changed = tracker.prepare(WEAPON, OTHER_TARGET, true, "other:sword", 3, 0.9f, true, 54 + n * 6, true);
+                MoonDamageTracker.PendingHit changed = tracker.prepare(WEAPON, OTHER_TARGET, true, "other:sword", 3, 0.9f, true, 90 + n * 10, true);
                 check(tracker.accept(changed, changed.trueDamage() > 0), "changed profile commit failed");
+                if (n == 0) check(trueTick(tracker) == 60, "profile change reset true cooldown");
                 if (n == 4) near(changed.trueDamage(), 2);
             }
         });
         run("target lifecycle cleanup removes layers but not weapon cooldown", () -> {
             MoonDamageTracker tracker = new MoonDamageTracker();
-            for (int n = 0; n < 4; n++) accept(tracker, WEAPON, TARGET, true, n * 6);
+            for (int n = 0; n < 4; n++) accept(tracker, WEAPON, TARGET, true, n * 10);
             tracker.clearTarget(TARGET);
-            check(hit(tracker, WEAPON, TARGET, true, 19) == null, "target cleanup reset interval");
-            check(!accept(tracker, WEAPON, TARGET, true, 24).fifth(), "target cleanup kept layers");
+            check(hit(tracker, WEAPON, TARGET, true, 31) == null, "target cleanup reset interval");
+            check(!accept(tracker, WEAPON, TARGET, true, 40).fifth(), "target cleanup kept layers");
         });
         run("nonplayer fifth is unaffected by player true cooldown", () -> {
             MoonDamageTracker tracker = seededTargets();
             for (int n = 0; n < 5; n++) {
-                MoonDamageTracker.PendingHit hit = accept(tracker, WEAPON, new UUID(5, n), false, 48 + n);
+                MoonDamageTracker.PendingHit hit = accept(tracker, WEAPON, new UUID(5, n), false, 80 + n);
                 near(hit.trueDamage(), n == 4 ? 3.75f : 3);
             }
         });

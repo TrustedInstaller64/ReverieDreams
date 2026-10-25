@@ -76,6 +76,12 @@ public class MoonDamageCombatTest {
                 check(MoonDamageCombat.bypassesCooldown(null, source), "exception left outer context suspended");
             }
             System.out.println("PASS nested exception restores outer damage scope");
+
+            current.set(constructor.newInstance(null, source, null));
+            check(MoonDamageCombat.bypassesCooldown(null, source), "bonus interval restored native hit protection");
+            check(MoonDamageCombat.addTrueDamage(null, source, 2) == 2, "interval-blocked hit gained true damage");
+            check(!MoonDamageCombat.bypassesCooldown(null, other), "interval-blocked scope affected unrelated damage");
+            System.out.println("PASS bonus interval preserves scoped continuous hits without adding bonus damage");
         } finally {
             current.remove();
         }

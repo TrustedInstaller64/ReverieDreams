@@ -16,7 +16,7 @@ public class MoonDamageTracker {
         float damage = level * weight * (night ? 1 : 0.5f);
         if (!Float.isFinite(damage)) return null;
         WeaponState state = this.weapons.get(weaponId);
-        if (state != null && (tick < state.lastTick || player && state.hasPlayerTick && tick - state.playerTick < 6 || !player && state.hasEntityTick && tick - state.entityTick < 1)) return null;
+        if (state != null && (tick < state.lastTick || player && state.hasPlayerTick && tick - state.playerTick < 10 || !player && state.hasEntityTick && tick - state.entityTick < 1)) return null;
         Profile profile = new Profile(itemId, level, weight, trueEligible);
         long[] previous = state == null || !profile.equals(state.profile) ? EMPTY : player ? state.players.getOrDefault(targetId, EMPTY) : state.entities;
         int start = 0;
