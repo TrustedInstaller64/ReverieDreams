@@ -42,6 +42,7 @@ import cc.thonly.reverie_dreams.server.player.PlayerComponentInitializer;
 import cc.thonly.reverie_dreams.sound.JukeboxSongInit;
 import cc.thonly.reverie_dreams.sound.SoundEventInit;
 import cc.thonly.reverie_dreams.state.RDBlockStateTemplates;
+import cc.thonly.reverie_dreams.util.TouhouNotaUtils;
 import cc.thonly.reverie_dreams.util.ConstantInfo;
 import cc.thonly.reverie_dreams.util.ImageToTextScanner;
 import cc.thonly.reverie_dreams.util.item.ItemStackCheckUtils;
@@ -57,6 +58,8 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -91,6 +94,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import nota.Nota;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -310,6 +314,8 @@ public class ReverieDreams implements ModInitializer {
             }
         });
         ServerPlayConnectionEvents.DISCONNECT.register((playNetworkHandler, server) -> {
+            TouhouNotaUtils.stop(playNetworkHandler.player);
+            Nota.removePlayer(playNetworkHandler.player.getUUID());
             PLAYER_WITH_MOD.remove(playNetworkHandler.player);
             PLAYER_SIDE_VERSION.remove(playNetworkHandler.player);
         });
@@ -317,6 +323,13 @@ public class ReverieDreams implements ModInitializer {
 
     @SuppressWarnings("rawtypes")
     private void registerServerEvents() {
+        ServerChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> TouhouNotaUtils.stopChunk(world, chunk.getPos()));
+        ServerWorldEvents.UNLOAD.register((server, world) -> TouhouNotaUtils.stopWorld(world));
+        ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+            TouhouNotaUtils.stopAll(server);
+            DelayedTask.clear(server);
+        });
+
         ServerPlayConnectionEvents.JOIN.register((handler, packetSender, server) -> {
             ServerPlayer player = handler.getPlayer();
             PlayerDataComponentManager componentManager = PlayerDataComponentManager.getInstance();

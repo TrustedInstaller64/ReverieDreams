@@ -11,7 +11,6 @@ import net.minecraft.world.level.storage.ValueOutput;
 import nota.player.SongPlayer;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,23 +35,21 @@ public class MusicBlockEntity extends BlockEntity {
 
         boolean hasRedstone = world.hasNeighborSignal(pos);
 
-        Map<Long, SongPlayer> blockPos2SongPlayer = TouhouNotaUtils.blockMusicPlayCache.computeIfAbsent(world, w -> new HashMap<>());
-        SongPlayer songPlayer = blockPos2SongPlayer.get(pos.asLong());
-
-        if (hasRedstone && blockEntity.isFirst && blockEntity.select != null) {
+        if (!hasRedstone) {
+            TouhouNotaUtils.stopAt(world, pos, blockEntity);
+            return;
+        }
+        if (blockEntity.select != null && !blockEntity.select.isBlank()) {
             blockEntity.isFirst = false;
             TouhouNotaUtils.playAt(world, pos, blockEntity.getSelect());
-            return;
         }
+    }
 
-        if (hasRedstone && songPlayer == null) {
-            TouhouNotaUtils.playAt(world, pos, blockEntity.getSelect());
-            return;
-        }
-
-        if (!hasRedstone && songPlayer != null && songPlayer.isPlaying()) {
-            songPlayer.setPlaying(false);
-            blockPos2SongPlayer.remove(pos.asLong());
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        if (this.level != null && !this.level.isClientSide()) {
+            TouhouNotaUtils.stopAt(this.level, this.worldPosition, this);
         }
     }
 
@@ -75,6 +72,7 @@ public class MusicBlockEntity extends BlockEntity {
         }
 
         if (this.level != null && !this.level.isClientSide) {
+            TouhouNotaUtils.stopAt(level, worldPosition, this);
             TouhouNotaUtils.playAt(level, worldPosition, select);
         }
         return filenames.indexOf(select);

@@ -15,6 +15,7 @@ import nota.model.playmode.MonoMode;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Plays a Song for a list of Players
@@ -27,13 +28,13 @@ public abstract class SongPlayer {
 	protected Playlist playlist;
 	protected int currentSongIndex = 0;
 
-	public boolean playing = false;
+	public volatile boolean playing = false;
 	protected boolean fading = false;
 	protected short tick = -1;
 	protected Map<UUID, Boolean> playerList = new ConcurrentHashMap<>();
 
 	protected boolean autoDestroy = false;
-	protected boolean destroyed = false;
+	protected volatile boolean destroyed = false;
 
 	protected byte volume = 100;
 	float songDelay = 50.0F; //milliseconds per tick
@@ -45,7 +46,8 @@ public abstract class SongPlayer {
 	protected boolean enable10Octave = false;
 	protected final MinecraftServer server;
 
-	Timer timer = new Timer();
+	Timer timer;
+	private final AtomicBoolean tickQueued = new AtomicBoolean();
 
 	public SongPlayer(Song song) {
 		this(new Playlist(song));
@@ -57,6 +59,8 @@ public abstract class SongPlayer {
 		this.song = playlist.get(this.currentSongIndex);
 		this.songDelay = song.getDelay() * 50.0f;
 		this.server = api.getServer();
+		this.timer = new Timer("nota-song-player", true);
+		this.api.registerSongPlayer(this);
 		restartTask((long)this.songDelay);
 	}
 
@@ -90,9 +94,11 @@ public abstract class SongPlayer {
 	}
 
 	private synchronized void onTaskRun(TimerTask task) {
-		if(this.server != api.getServer() && (this.destroyed || Nota.getAPI().isDisabling())) {
-			task.cancel();
+		if(this.destroyed || this.server != api.getServer() || api.isDisabling()) {
+			this.destroy();
+			return;
 		}
+		if(this.server.isPaused() || !this.server.tickRateManager().runsNormally()) return;
 		if(playing) {
 			tick++;
 			if(tick == 0) {
@@ -127,7 +133,7 @@ public abstract class SongPlayer {
 				}
 				playing = false;
 				if(this.autoDestroy) {
-					task.cancel();
+					this.destroy();
 				}
 				return;
 			}
@@ -148,12 +154,33 @@ public abstract class SongPlayer {
 	 * Starts this SongPlayer
 	 */
 	private synchronized void restartTask(long delay) {
+		if(this.destroyed) return;
 		this.timer.schedule(new TimerTask() {
 			@Override
 			public synchronized void run() {
-				onTaskRun(this);
+				if(destroyed || server == null || server != api.getServer() || api.isDisabling()) {
+					destroy();
+					return;
+				}
+				if(tickQueued.compareAndSet(false, true)) {
+					try {
+						server.execute(() -> {
+							try {
+								onTaskRun(this);
+							} catch (RuntimeException e) {
+								destroy();
+								Nota.LOGGER.error("Failed to play song", e);
+							} finally {
+								tickQueued.set(false);
+							}
+						});
+					} catch (RuntimeException e) {
+						tickQueued.set(false);
+						destroy();
+					}
+				}
 			}
-		}, 0L, delay);
+		}, 0L, Math.max(1L, delay));
 	}
 
 	/**
@@ -204,15 +231,16 @@ public abstract class SongPlayer {
 	 *
 	 * @param playerUuid entity's uuid
 	 */
-	public void addPlayer(UUID playerUuid) {
+	public synchronized void addPlayer(UUID playerUuid) {
+		if(this.destroyed) return;
 		if(!this.playerList.containsKey(playerUuid)) {
 			this.playerList.put(playerUuid, false);
-			ArrayList<SongPlayer> songs = Nota.getSongPlayersByPlayer(playerUuid);
-			if(songs == null) {
-				songs = new ArrayList<>();
+			synchronized(Nota.class) {
+				ArrayList<SongPlayer> current = Nota.getSongPlayersByPlayer(playerUuid);
+				ArrayList<SongPlayer> songs = current == null ? new ArrayList<>() : new ArrayList<>(current);
+				songs.add(this);
+				Nota.setSongPlayersByPlayer(playerUuid, songs);
 			}
-			songs.add(this);
-			Nota.setSongPlayersByPlayer(playerUuid, songs);
 		}
 	}
 
@@ -247,10 +275,17 @@ public abstract class SongPlayer {
 	/**
 	 * SongPlayer will destroy itself
 	 */
-	public void destroy() {
+	public synchronized void destroy() {
+		if(this.destroyed) return;
 		this.destroyed = true;
 		this.playing = false;
 		this.setTick((short) -1);
+		this.timer.cancel();
+		for(UUID playerUuid : new HashSet<>(this.playerList.keySet())) {
+			this.removePlayer(playerUuid);
+		}
+		this.playerList.clear();
+		this.api.unregisterSongPlayer(this);
 	}
 
 	/**
@@ -268,7 +303,7 @@ public abstract class SongPlayer {
 	 * @param playing if this entity should play
 	 */
 	public void setPlaying(boolean playing) {
-		this.playing = playing;
+		this.playing = playing && !this.destroyed;
 	}
 
 	/**
@@ -303,15 +338,16 @@ public abstract class SongPlayer {
 	 *
 	 * @param playerUuid of entity to remove
 	 */
-	public void removePlayer(UUID playerUuid) {
+	public synchronized void removePlayer(UUID playerUuid) {
 		playerList.remove(playerUuid);
-		if(Nota.getSongPlayersByPlayer(playerUuid) == null) {
-			return;
+		synchronized(Nota.class) {
+			ArrayList<SongPlayer> current = Nota.getSongPlayersByPlayer(playerUuid);
+			if(current != null) {
+				ArrayList<SongPlayer> songs = new ArrayList<>(current);
+				songs.remove(this);
+				Nota.setSongPlayersByPlayer(playerUuid, songs);
+			}
 		}
-		ArrayList<SongPlayer> songs = new ArrayList<>(
-				Nota.getSongPlayersByPlayer(playerUuid));
-		songs.remove(this);
-		Nota.setSongPlayersByPlayer(playerUuid, songs);
 		if(this.playerList.isEmpty() && this.autoDestroy) {
 			destroy();
 		}

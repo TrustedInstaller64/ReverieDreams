@@ -9,6 +9,7 @@ import net.minecraft.commands.Commands;
 public class CommandInit {
     public static void init() {
         registerCommand(new MainCommand());
+        registerCommand(new MusicCommand());
     }
 
     public static void registerCommand(CommandRegistration registry) {

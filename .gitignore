@@ -39,3 +39,7 @@ replay_*.log
 *.hprof
 *.jfr
 
+
+# python verification tools
+__pycache__/
+*.pyc

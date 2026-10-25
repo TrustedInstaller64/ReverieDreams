@@ -835,6 +835,18 @@ public class SimpChineseLangProvider extends FabricLanguageProvider implements I
     }
 
     public void generateDialogTranslations(HolderLookup.Provider wrapperLookup, TranslationBuilder translationBuilder) {
+        translationBuilder.add("dialog.music.title", "键盘选曲");
+        translationBuilder.add("dialog.music.selected", "当前选择：%s");
+        translationBuilder.add("dialog.music.none", "未选择");
+        translationBuilder.add("dialog.music.page", "第 %s / %s 页");
+        translationBuilder.add("dialog.music.previous", "上一页");
+        translationBuilder.add("dialog.music.next", "下一页");
+        translationBuilder.add("dialog.music.play", "播放所选歌曲");
+        translationBuilder.add("dialog.music.stop", "停止演奏");
+        translationBuilder.add("dialog.music.hold_keyboard", "请在对应手中持有键盘。");
+        translationBuilder.add("dialog.music.not_found", "请选择一首仍然存在的歌曲。");
+        translationBuilder.add("item.reverie_dreams.music.read_failed", "无法读取音乐：%s");
+
         translationBuilder.add("dialog.message.select", "请选择一个角色");
 
         translationBuilder.add("dialog.title.main", "东方入门手册");

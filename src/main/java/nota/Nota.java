@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,12 +23,13 @@ public class Nota implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger("Nota");
 
 	private static Nota instance;
-	public MinecraftServer server;
+	public volatile MinecraftServer server;
 
 	Map<UUID, ArrayList<SongPlayer>> playingSongs = new ConcurrentHashMap<>();
 	Map<UUID, Byte> playerVolume = new ConcurrentHashMap<>();
+	private final Set<SongPlayer> songPlayers = ConcurrentHashMap.newKeySet();
 
-	private boolean disabling = false;
+	private volatile boolean disabling = false;
 
 	/**
 	 * Returns true if a Player is currently receiving a song
@@ -69,7 +71,7 @@ public class Nota implements ModInitializer {
 		if(songs == null) {
 			return;
 		}
-		for(SongPlayer songPlayer : songs) {
+		for(SongPlayer songPlayer : new ArrayList<>(songs)) {
 			songPlayer.removePlayer(playerUuid);
 		}
 	}
@@ -133,7 +135,24 @@ public class Nota implements ModInitializer {
 	}
 
 	public static void setSongPlayersByPlayer(UUID playerUuid, ArrayList<SongPlayer> songs) {
-		instance.playingSongs.put(playerUuid, songs);
+		if(songs == null || songs.isEmpty()) {
+			instance.playingSongs.remove(playerUuid);
+		} else {
+			instance.playingSongs.put(playerUuid, songs);
+		}
+	}
+
+	public void registerSongPlayer(SongPlayer songPlayer) {
+		this.songPlayers.add(songPlayer);
+	}
+
+	public void unregisterSongPlayer(SongPlayer songPlayer) {
+		this.songPlayers.remove(songPlayer);
+	}
+
+	public static void removePlayer(UUID playerUuid) {
+		stopPlaying(playerUuid);
+		instance.playerVolume.remove(playerUuid);
 	}
 
 	public boolean isDisabling() {
@@ -156,8 +175,13 @@ public class Nota implements ModInitializer {
 			Nota.getAPI().server = server;
 		});
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
-			Nota.getAPI().server = null;
 			Nota.getAPI().disabling = true;
+			for(SongPlayer songPlayer : new ArrayList<>(this.songPlayers)) {
+				songPlayer.destroy();
+			}
+			this.playingSongs.clear();
+			this.playerVolume.clear();
+			Nota.getAPI().server = null;
 		});
 	}
 }

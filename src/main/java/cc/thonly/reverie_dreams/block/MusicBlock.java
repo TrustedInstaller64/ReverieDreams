@@ -21,10 +21,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
-import nota.player.SongPlayer;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
 
 public class MusicBlock extends BaseEntityBlock {
     public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
@@ -57,6 +55,7 @@ public class MusicBlock extends BaseEntityBlock {
                 player.displayClientMessage(Component.translatable("item.reverie_dreams.music.no_music_selected"), false);
                 return InteractionResult.PASS;
             } else if (world.hasNeighborSignal(pos)){
+                TouhouNotaUtils.stopAt(world, pos, blockEntity);
                 TouhouNotaUtils.playAt(world, pos, blockEntity.getSelect());
             }
             player.displayClientMessage(Component.translatable("item.reverie_dreams.music.switch_music", blockEntity.getSelect()), false);
@@ -69,14 +68,7 @@ public class MusicBlock extends BaseEntityBlock {
     public BlockState playerWillDestroy(Level world, BlockPos pos, BlockState state, Player player) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof MusicBlockEntity musicBlockEntity) {
-            SongPlayer selfPlayer = musicBlockEntity.getSelfPlayer();
-            if (selfPlayer != null) {
-                selfPlayer.setPlaying(false);
-                Map<Long, SongPlayer> blockPos2SongPlayer = TouhouNotaUtils.blockMusicPlayCache.get(world);
-                if (blockPos2SongPlayer != null) {
-                    blockPos2SongPlayer.remove(pos.asLong());
-                }
-            }
+            TouhouNotaUtils.stopAt(world, pos, musicBlockEntity);
         }
         return super.playerWillDestroy(world, pos, state, player);
     }
@@ -91,7 +83,9 @@ public class MusicBlock extends BaseEntityBlock {
         if (hasPower != wasPowered) {
             world.setBlock(pos, state.setValue(POWERED, hasPower), Block.UPDATE_ALL);
 
-            if (hasPower) {
+            if (!hasPower) {
+                TouhouNotaUtils.stopAt(world, pos);
+            } else {
                 BlockEntity blockEntity = world.getBlockEntity(pos);
                 if (blockEntity instanceof MusicBlockEntity musicBlockEntity) {
                     TouhouNotaUtils.playAt(world, pos, musicBlockEntity.getSelect());
