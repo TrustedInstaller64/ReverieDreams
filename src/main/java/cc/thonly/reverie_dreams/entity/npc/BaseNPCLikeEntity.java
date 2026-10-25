@@ -728,6 +728,12 @@ public abstract class BaseNPCLikeEntity extends AbstractNPCEntity implements Ran
 
     @Override
     public void tick() {
+        if (this.isDeadOrDying()) {
+            this.stopRiding();
+            this.removeSeat();
+            super.tick();
+            return;
+        }
         Level world = this.level();
         this.updateHealth();
         this.updateHunger();
@@ -769,18 +775,28 @@ public abstract class BaseNPCLikeEntity extends AbstractNPCEntity implements Ran
             this.setSit(true);
             return;
         } else {
-            if (this.seat != null) {
-                this.seat.discard();
-                this.seatUUID = "";
-                this.seat = null;
-            }
-            this.setSit(false);
+            this.removeSeat();
         }
         if (this.getPose() == Pose.CROUCHING) {
             this.setPose(Pose.STANDING);
         }
         this.lastNpcState = this.npcState;
         super.tick();
+    }
+
+    private void removeSeat() {
+        if (this.seat == null && this.level() instanceof ServerLevel world && !this.seatUUID.isEmpty() && !this.seatUUID.equals("null")) {
+            try {
+                if (world.getEntity(UUID.fromString(this.seatUUID)) instanceof ArmorStand armorStand) {
+                    this.seat = armorStand;
+                }
+            } catch (IllegalArgumentException ignored) {
+            }
+        }
+        if (this.seat != null) this.seat.discard();
+        this.seat = null;
+        this.seatUUID = "";
+        this.setSit(false);
     }
 
     private void spawnSeatAndSit() {

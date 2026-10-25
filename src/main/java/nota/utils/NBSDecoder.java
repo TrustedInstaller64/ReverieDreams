@@ -55,8 +55,7 @@ public class NBSDecoder {
 		HashMap<Integer, Layer> layerHashMap = new HashMap<Integer, Layer>();
 		byte biggestInstrumentIndex = -1;
 		boolean isStereo = false;
-		try {
-			DataInputStream dataInputStream = new DataInputStream(inputStream);
+		try (DataInputStream dataInputStream = new DataInputStream(inputStream)) {
 			short length = readShort(dataInputStream);
 			int firstcustominstrument = 10; //Backward compatibility - most of songs with old structure are from 1.12
 			int firstcustominstrumentdiff;

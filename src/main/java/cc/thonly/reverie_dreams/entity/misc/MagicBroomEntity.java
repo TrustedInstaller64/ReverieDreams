@@ -72,11 +72,6 @@ public class MagicBroomEntity extends PathfinderMob implements PlayerRideableJum
     }
 
     @Override
-    public @Nullable Component getCustomName() {
-        return this.getName();
-    }
-
-    @Override
     public Component getDisplayName() {
         return this.getName();
     }

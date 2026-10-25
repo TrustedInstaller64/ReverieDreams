@@ -315,7 +315,7 @@ tasks.named('check') {
     dependsOn tasks.named('testMusicDialog')
 }
 
-['MoonDamageTracker', 'MoonDamageWeapons', 'MoonDamageCombat'].each { name ->
+['MoonDamageTracker', 'MoonDamageWeapons', 'MoonDamageCombat', 'EntityNames'].each { name ->
     def testTask = tasks.register("test${name}", JavaExec) {
         group = 'verification'
         dependsOn tasks.named('testClasses')
@@ -326,6 +326,17 @@ tasks.named('check') {
     }
     tasks.named('check') { dependsOn testTask }
 }
+
+tasks.register('testNBSDecoder', JavaExec) {
+    group = 'verification'
+    dependsOn tasks.named('testClasses')
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'nota.utils.NBSDecoderTest'
+    workingDir = layout.buildDirectory.dir('nbs-decoder-test').get().asFile
+    doFirst { workingDir.mkdirs() }
+}
+
+tasks.named('check') { dependsOn tasks.named('testNBSDecoder') }
 
 tasks.register('testMoonDamageMixin', JavaExec) {
     group = 'verification'
