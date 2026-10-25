@@ -19,6 +19,10 @@ It is currently under active development and aims to deliver a rich danmaku-styl
 - ❌ **NeoForge** and **Bukkit+Fabric mixes** will never be supported
 - 🌏 Imperfect **English translation**
 
+## Fabric 1.21.8 LTS fork
+
+This branch targets Minecraft 1.21.8 Fabric and Java 21. It includes music lifecycle fixes, the keyboard Dialog, and the revised Moon Damage rules. See [patch notes](docs/fabric-1.21.8-fixes.md), [current gameplay rules](docs/gameplay/moon-damage/current-rules.md), and [verification](docs/gameplay/moon-damage/verification.md).
+
 ---
 
 ## 🌏 Translation issues

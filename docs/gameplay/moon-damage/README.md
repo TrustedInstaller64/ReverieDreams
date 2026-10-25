@@ -6,6 +6,7 @@
 | --- | --- |
 | [current-rules.md](current-rules.md) | 当前规则与本轮实施裁定 |
 | [implementation-plan.md](implementation-plan.md) | 实施步骤与验证重点 |
+| [verification.md](verification.md) | 已执行验证、构建方式与未实测边界 |
 | [moon-damage-lts.md](moon-damage-lts.md) | 原 LTS 行为源码说明 |
 | [moon-damage-design-discussion.md](moon-damage-design-discussion.md) | 历次讨论记录，含已经放弃的方案 |
 | [moon-damage-weapon-statistics.md](moon-damage-weapon-statistics.md) | 原版武器及锋利基准静态算例 |
